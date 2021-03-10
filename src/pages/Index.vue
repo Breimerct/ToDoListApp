@@ -26,6 +26,9 @@
               :color="isDark ? 'white' : 'black'"
               :model-value="title"
               ref="inputTask"
+              :error="errorInput"
+              :error-message="messageError"
+              @keyup="validateInput"
             >
               <template v-slot:append>
                 <q-icon v-if="title !== ''" name="close" @click="title = ''" class="cursor-pointer" />
@@ -51,7 +54,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, provide, computed } from 'vue';
+import { defineComponent, ref, provide, computed, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import TodoList from "components/TodoList";
 
@@ -63,6 +66,8 @@ export default defineComponent({
     const title = ref('')
     const tasks = ref([])
     const inputTask = ref(null)
+    const messageError = ref('')
+    const errorInput = ref(false)
 
     const isDark = computed(() => {
       return $q.dark.isActive
@@ -76,18 +81,12 @@ export default defineComponent({
           status: false
         })
         title.value = ''
+        errorInput.value = false
+        messageError.value = ''
         inputTask.value.focus()
-
       } else {
-        $q.dialog({
-          title: 'Warning!',
-          message: 'enter the task name',
-          class: ['bg-warning', 'text-white', 'text-center'],
-          ok: {
-            push: true,
-            color: 'secondary'
-          }
-        })
+        errorInput.value = true
+        messageError.value = 'This field is mandatory, empty fields are not accepted.'
       }
     }
 
@@ -110,7 +109,16 @@ export default defineComponent({
           }
         })
       }
-      console.log(tasks.value)
+    }
+
+    const validateInput = (val) => {
+      if (val.length <= 0) {
+        errorInput.value = true
+        messageError.value = 'This field is mandatory, empty fields are not accepted.'
+      } else {
+        errorInput.value = false
+        messageError.value = ''
+      }
     }
 
     provide('tasks', tasks.value)
@@ -120,9 +128,12 @@ export default defineComponent({
       isDark,
       tasks,
       inputTask,
+      errorInput,
+      messageError,
       saveTask,
       deleteTask,
-      editTask
+      editTask,
+      validateInput
     }
   }
 })

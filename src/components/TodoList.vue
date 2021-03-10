@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {defineComponent, inject, onMounted, ref} from 'vue'
+import {defineComponent, inject, ref} from 'vue'
 export default defineComponent({
   name: "TodoList",
 
