@@ -9,6 +9,7 @@
           v-model="task.title"
           buttons label-set="save"
           label-cancel="cancel"
+          :validate="validateTask"
           @save="saveUpdated($event, task)"
           v-slot="scope"
           :model-value="task.title"
@@ -16,6 +17,8 @@
           <q-input
             v-model="scope.value"
             dense
+            :error="titleValidate"
+            :error-message="validateMessage"
             autofocus
             counter
             @keyup.enter="scope.set"
@@ -44,6 +47,8 @@ export default defineComponent({
 
   setup (props, context) {
     const tasks = ref([])
+    const titleValidate = ref(false)
+    const validateMessage = ref('')
 
     tasks.value = inject('tasks')
 
@@ -54,9 +59,23 @@ export default defineComponent({
       })
     }
 
+    const validateTask = (val) => {
+      if (val !== '') {
+        titleValidate.value = false
+        return true
+      } else {
+        titleValidate.value = true
+        validateMessage.value = 'This field is mandatory, empty fields are not accepted.'
+        return false
+      }
+    }
+
     return {
       tasks,
-      saveUpdated
+      titleValidate,
+      validateMessage,
+      saveUpdated,
+      validateTask
     }
   }
 })

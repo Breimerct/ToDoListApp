@@ -16,7 +16,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <q-form @submi.preventt="saveTask">
+          <q-form>
             <q-input
               filled
               bottom-slots
@@ -29,10 +29,6 @@
             >
               <template v-slot:append>
                 <q-icon v-if="title !== ''" name="close" @click="title = ''" class="cursor-pointer" />
-              </template>
-
-              <template v-slot:hint v-if="title.length === 120">
-                Field hint
               </template>
 
               <template v-slot:after>
@@ -100,8 +96,20 @@ export default defineComponent({
     }
 
     const editTask = (e) => {
-      const taskEdit = tasks.value.filter(t => t.id === e.task.id)
-      taskEdit[0].title = e.titleEdited
+      if (e.titleEdited) {
+        const taskEdit = tasks.value.filter(t => t.id === e.task.id)
+        taskEdit[0].title = e.titleEdited
+      } else {
+        $q.dialog({
+          title: 'Warning!',
+          message: 'enter the task name',
+          class: ['bg-warning', 'text-white', 'text-center'],
+          ok: {
+            push: true,
+            color: 'secondary'
+          }
+        })
+      }
       console.log(tasks.value)
     }
 
