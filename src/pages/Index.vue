@@ -91,7 +91,23 @@ export default defineComponent({
     }
 
     const deleteTask = (e) => {
-      tasks.value.splice(e, 1)
+      $q.dialog({
+        title: 'Confirm',
+        message: 'Are you sure you want to delete this task?',
+        ok: {
+          label: 'yes',
+          show: true,
+          color: 'primary',
+          outline: true
+        },
+        cancel: {
+          label: 'No',
+          show: true,
+          color: 'primary'
+        }
+      }).onOk(() => {
+        tasks.value.splice(e, 1)
+      })
     }
 
     const editTask = (e) => {

@@ -5,6 +5,13 @@
         <p class="text-justify text-wrap">
           {{ task.title }}
         </p>
+        <q-tooltip
+          transition-show="rotate"
+          transition-hide="rotate"
+          anchor="top middle" self="top middle"
+        >
+          Edit task
+        </q-tooltip>
         <q-popup-edit
           v-model="task.title"
           buttons label-set="save"
