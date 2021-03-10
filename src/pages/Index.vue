@@ -80,6 +80,7 @@ export default defineComponent({
           title: title.value,
           status: false
         })
+        localStorage.setItem('tasks', JSON.stringify(tasks.value))
         title.value = ''
         errorInput.value = false
         messageError.value = ''
@@ -107,6 +108,7 @@ export default defineComponent({
         }
       }).onOk(() => {
         tasks.value.splice(e, 1)
+        localStorage.setItem('tasks', JSON.stringify(tasks.value))
       })
     }
 
@@ -114,6 +116,7 @@ export default defineComponent({
       if (e.titleEdited) {
         const taskEdit = tasks.value.filter(t => t.id === e.task.id)
         taskEdit[0].title = e.titleEdited
+        localStorage.setItem('tasks', JSON.stringify(tasks.value))
       } else {
         $q.dialog({
           title: 'Warning!',
@@ -139,6 +142,12 @@ export default defineComponent({
 
     onMounted(() => {
       inputTask.value.focus()
+      if (localStorage.getItem('tasks') !== null) {
+        Object.values(JSON.parse(localStorage.getItem('tasks')))
+          .forEach(val => {
+            tasks.value.push(val)
+          })
+      }
     })
 
     provide('tasks', tasks.value)
