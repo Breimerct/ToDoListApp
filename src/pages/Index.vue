@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, provide, computed, watch } from 'vue';
+import { defineComponent, ref, provide, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import TodoList from "components/TodoList";
 
@@ -120,6 +120,10 @@ export default defineComponent({
         messageError.value = ''
       }
     }
+
+    onMounted(() => {
+      inputTask.value.focus()
+    })
 
     provide('tasks', tasks.value)
 
