@@ -2,6 +2,15 @@
   <q-page class="fit row justify-center q-px-lg non-selectable" :class="{ 'bg-grey-8' : isDark }">
     <div class="col-md-8 col-12">
       <q-card class="q-mt-xl shadow-10">
+        <q-avatar
+          size="md"
+          text-color="white"
+          class="float-left q-ma-sm btn-dark cursor-pointer"
+          @click="changeLang"
+        >
+          <img src="../assets/flag-eeuu.png" alt="flag-eeuu" v-if="i18n.global.locale === 'es'"/>
+          <img src="../assets/flag-col.png" alt="flag-col" v-else/>
+        </q-avatar>
         <q-btn
           flat
           dense
@@ -21,7 +30,7 @@
               filled
               bottom-slots
               v-model="title"
-              label="Name Task"
+              :label="i18n.global.t('LABELS.NAME_TASK')"
               counter
               :color="isDark ? 'white' : 'black'"
               :model-value="title"
@@ -37,7 +46,7 @@
               <template v-slot:after>
                 <q-btn round flat :color="isDark ? 'white' : 'black'" icon="eva-save-outline" type="submit" @click="saveTask">
                   <q-tooltip :offset="[-75, -75]">
-                    Save task
+                    {{ i18n.global.t('LABELS.SAVE_TASK') }}
                   </q-tooltip>
                 </q-btn>
               </template>
@@ -56,11 +65,15 @@
 <script>
 import { defineComponent, ref, provide, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { i18n } from "boot/i18n";
 import TodoList from "components/TodoList";
 
 export default defineComponent({
   name: 'PageIndex',
-  components: {TodoList},
+  components: {
+    TodoList
+
+  },
   setup () {
     const $q = new useQuasar()
     const title = ref('')
@@ -87,22 +100,22 @@ export default defineComponent({
         inputTask.value.focus()
       } else {
         errorInput.value = true
-        messageError.value = 'This field is mandatory, empty fields are not accepted.'
+        messageError.value = i18n.global.t('OBLIGATORY_FIELD')
       }
     }
 
     const deleteTask = (e) => {
       $q.dialog({
-        title: 'Confirm',
-        message: 'Are you sure you want to delete this task?',
+        title: i18n.global.t('TITLES.CONFIRM'),
+        message: i18n.global.t('QUESTION_DELETE_TASK'),
         ok: {
-          label: 'yes',
+          label: i18n.global.t('LABELS.YES'),
           show: true,
           color: 'primary',
           outline: true
         },
         cancel: {
-          label: 'No',
+          label: i18n.global.t('LABELS.NO'),
           show: true,
           color: 'primary'
         }
@@ -120,7 +133,7 @@ export default defineComponent({
       } else {
         $q.dialog({
           title: 'Warning!',
-          message: 'enter the task name',
+          message: i18n.global.t('INSERT_TASK_NAME'),
           class: ['bg-warning', 'text-white', 'text-center'],
           ok: {
             push: true,
@@ -133,10 +146,18 @@ export default defineComponent({
     const validateInput = (val) => {
       if (val.length <= 0) {
         errorInput.value = true
-        messageError.value = 'This field is mandatory, empty fields are not accepted.'
+        messageError.value = i18n.global.t('OBLIGATORY_FIELD')
       } else {
         errorInput.value = false
         messageError.value = ''
+      }
+    }
+
+    const changeLang = () => {
+      if (i18n.global.locale === 'es') {
+        i18n.global.locale = 'en'
+      } else {
+        i18n.global.locale = 'es'
       }
     }
 
@@ -159,10 +180,12 @@ export default defineComponent({
       inputTask,
       errorInput,
       messageError,
+      i18n,
       saveTask,
       deleteTask,
       editTask,
-      validateInput
+      validateInput,
+      changeLang
     }
   }
 })
