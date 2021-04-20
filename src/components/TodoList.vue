@@ -10,14 +10,17 @@
           transition-hide="rotate"
           anchor="top middle" self="top middle"
         >
-          Edit task
+          {{ i18n.global.t('LABELS.EDIT_TASK') }}
         </q-tooltip>
         <q-popup-edit
           v-model="task.title"
-          buttons label-set="save"
-          label-cancel="cancel"
+          buttons
+          :label-set="i18n.global.t('BUTTONS.SAVE')"
+          :label-cancel="i18n.global.t('BUTTONS.CANCEL')"
           :validate="validateTask"
           @save="saveUpdated($event, task)"
+          @cancel="clearErrors"
+          @close="clearErrors"
           v-slot="scope"
           :model-value="task.title"
         >
@@ -49,6 +52,8 @@
 
 <script>
 import {defineComponent, inject, ref} from 'vue'
+import { i18n } from "boot/i18n";
+
 export default defineComponent({
   name: "TodoList",
 
@@ -67,22 +72,29 @@ export default defineComponent({
     }
 
     const validateTask = (val) => {
-      if (val !== '') {
+      if (val.length !== 0) {
         titleValidate.value = false
         return true
       } else {
         titleValidate.value = true
-        validateMessage.value = 'This field is mandatory, empty fields are not accepted.'
+        validateMessage.value = i18n.global.t('OBLIGATORY_FIELD')
         return false
       }
+    }
+
+    const  clearErrors = () => {
+      validateMessage.value = ''
+      titleValidate.value = false
     }
 
     return {
       tasks,
       titleValidate,
       validateMessage,
+      i18n,
       saveUpdated,
-      validateTask
+      validateTask,
+      clearErrors
     }
   }
 })
