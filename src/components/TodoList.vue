@@ -19,6 +19,8 @@
           :label-cancel="i18n.global.t('BUTTONS.CANCEL')"
           :validate="validateTask"
           @save="saveUpdated($event, task)"
+          @cancel="clearErrors"
+          @close="clearErrors"
           v-slot="scope"
           :model-value="task.title"
         >
@@ -80,13 +82,19 @@ export default defineComponent({
       }
     }
 
+    const  clearErrors = () => {
+      validateMessage.value = ''
+      titleValidate.value = false
+    }
+
     return {
       tasks,
       titleValidate,
       validateMessage,
       i18n,
       saveUpdated,
-      validateTask
+      validateTask,
+      clearErrors
     }
   }
 })
