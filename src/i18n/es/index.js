@@ -10,7 +10,8 @@ export default {
     NO: 'No',
     NAME_TASK: 'Nombre de la tarea',
     SAVE_TASK: 'Guardar tarea',
-    EDIT_TASK: 'Editar tarea'
+    EDIT_TASK: 'Editar tarea',
+    CHANGE_LANG: 'Cambiar idioma a ingles'
   },
   BUTTONS: {
     SAVE: 'Guardar',
