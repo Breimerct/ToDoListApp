@@ -17,7 +17,7 @@
           rounded
           class="q-ma-sm float-right btn-dark"
           :icon="isDark ? 'eva-sun' : 'eva-moon-outline'"
-          @click="$q.dark.toggle()"
+          @click="darkToggle"
         />
         <q-card-section class="text-center">
           <div class="text-h4">
@@ -27,6 +27,7 @@
         <q-card-section>
           <q-form>
             <q-input
+              :dark="isDark"
               filled
               bottom-slots
               v-model="title"
@@ -63,9 +64,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, provide, computed, onMounted } from 'vue';
-import { useQuasar } from 'quasar';
-import { i18n } from "boot/i18n";
+import {computed, defineComponent, onMounted, provide, ref} from 'vue';
+import {useQuasar} from 'quasar';
+import {i18n} from "boot/i18n";
 import TodoList from "components/TodoList";
 
 export default defineComponent({
@@ -162,6 +163,10 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      if (localStorage.getItem('isDark')) {
+        const dark = JSON.parse(localStorage.getItem('isDark'))
+        $q.dark.set(dark.value)
+      }
       inputTask.value.focus()
       if (localStorage.getItem('tasks') !== null) {
         Object.values(JSON.parse(localStorage.getItem('tasks')))
@@ -170,6 +175,14 @@ export default defineComponent({
           })
       }
     })
+
+    const darkToggle = () => {
+      $q.dark.toggle()
+      const dark = {
+        value: $q.dark.isActive
+      }
+      localStorage.setItem('isDark', JSON.stringify(dark))
+    }
 
     provide('tasks', tasks.value)
 
@@ -185,7 +198,8 @@ export default defineComponent({
       deleteTask,
       editTask,
       validateInput,
-      changeLang
+      changeLang,
+      darkToggle
     }
   }
 })
