@@ -6,11 +6,12 @@ export default {
     CONFIRM: 'Confirm',
   },
   LABELS: {
-    YES: 'Si',
+    YES: 'Yes',
     NO: 'No',
     NAME_TASK: 'Name Task',
     SAVE_TASK: 'Save task',
-    EDIT_TASK: 'Edit task'
+    EDIT_TASK: 'Edit task',
+    CHANGE_LANG: 'Change lang to spanish'
   },
   BUTTONS: {
     SAVE: 'Save',

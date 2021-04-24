@@ -10,6 +10,9 @@
         >
           <img src="../assets/flag-eeuu.png" alt="flag-eeuu" v-if="i18n.global.locale === 'es'"/>
           <img src="../assets/flag-col.png" alt="flag-col" v-else/>
+          <q-tooltip anchor="center right" self="center left">
+            {{ i18n.global.t('LABELS.CHANGE_LANG') }}
+          </q-tooltip>
         </q-avatar>
         <q-btn
           flat
@@ -56,7 +59,7 @@
         </q-card-section>
         <q-separator :color="isDark ? 'white' : ''" v-if="tasks.length > 0"/>
         <q-card-section v-if="tasks.length > 0">
-          <todo-list @onDelete="deleteTask" @onEdit="editTask"/>
+          <todo-list @onDelete="deleteTask" @onEdit="editTask" @onValidateTask="validateInput"/>
         </q-card-section>
       </q-card>
     </div>
@@ -109,11 +112,11 @@ export default defineComponent({
       $q.dialog({
         title: i18n.global.t('TITLES.CONFIRM'),
         message: i18n.global.t('QUESTION_DELETE_TASK'),
+        persistent: true,
         ok: {
           label: i18n.global.t('LABELS.YES'),
           show: true,
-          color: 'primary',
-          outline: true
+          color: 'negative',
         },
         cancel: {
           label: i18n.global.t('LABELS.NO'),
@@ -131,16 +134,6 @@ export default defineComponent({
         const taskEdit = tasks.value.filter(t => t.id === e.task.id)
         taskEdit[0].title = e.titleEdited
         localStorage.setItem('tasks', JSON.stringify(tasks.value))
-      } else {
-        $q.dialog({
-          title: 'Warning!',
-          message: i18n.global.t('INSERT_TASK_NAME'),
-          class: ['bg-warning', 'text-white', 'text-center'],
-          ok: {
-            push: true,
-            color: 'secondary'
-          }
-        })
       }
     }
 
@@ -155,6 +148,7 @@ export default defineComponent({
     }
 
     const changeLang = () => {
+      validateInput(title)
       if (i18n.global.locale === 'es') {
         i18n.global.locale = 'en'
       } else {
